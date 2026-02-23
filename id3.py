@@ -2,10 +2,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import math
-
 st.set_page_config(page_title="ID3 Decision Tree", layout="centered")
 st.title("🌳 ID3 Decision Tree Classifier")
-
 data = pd.DataFrame({
     "Outlook": ["Sunny","Sunny","Overcast","Rain","Rain","Rain",
                 "Overcast","Sunny","Sunny","Rain","Sunny","Overcast",
@@ -20,7 +18,6 @@ data = pd.DataFrame({
 
 st.subheader("📊 Training Dataset")
 st.dataframe(data, use_container_width=True)
-
 def entropy(col):
     _, counts = np.unique(col, return_counts=True)
     return -sum((c/len(col))*math.log2(c/len(col)) for c in counts)
@@ -49,18 +46,15 @@ def predict(tree, sample):
         return tree
     key = next(iter(tree))
     return predict(tree[key][sample[key]], sample)
-
 if st.button("Generate Decision Tree"):
     tree = id3(data, "PlayTennis", ["Outlook","Humidity"])
     st.session_state.tree = tree
     st.subheader("🌲 Generated Decision Tree")
     st.json(tree)
-
 if "tree" in st.session_state:
     st.subheader("🔮 Prediction")
     o = st.selectbox("Outlook", data["Outlook"].unique())
     h = st.selectbox("Humidity", data["Humidity"].unique())
-
     if st.button("Predict"):
         result = predict(st.session_state.tree, {"Outlook": o, "Humidity": h})
 
